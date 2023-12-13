@@ -30,7 +30,17 @@ class GameController extends Controller
             );
         }
     }
-
+    public function indexserver(Request $request) {
+        $games = Game::all();
+        if ($request->is('api/*')) {
+            // Jika permintaan dari API, kirimkan sebagai JSON
+            return response()->json($games);
+        } else {
+            // Jika permintaan biasa, tampilkan sebagai tampilan HTML
+            return view('index', compact('games'));
+        }
+    }    
+        
     public function show($id)
     {
         $game = Game::find($id);
@@ -67,12 +77,14 @@ class GameController extends Controller
 
         $game = Game::create($payload);
 
-        return response()->json([
-            "status_code" => 200,
-            "message" => "success",
-            "game" => $game,            
-        ]);
+        return redirect(route('gamesserver.index'));
     }
+
+    public function edit($id)
+     {
+         $game = Game::find($id);
+         return view('edit', compact('game'));
+     }
 
     public function update(Request $request, $id) {
         $game = Game::find($id);
@@ -92,7 +104,7 @@ class GameController extends Controller
         // Update only the provided fields
         $game->update($request->only($this->fillable));
 
-        return response()->json(['game' => $game], 200);
+        return redirect(route('gamesserver.index'));
     }
 
     public function destroy($id) {
@@ -104,6 +116,6 @@ class GameController extends Controller
 
         $game->delete();
 
-        return response()->json(['message' => 'Game deleted'], 200);
+        return redirect(route('gamesserver.index'));
     }
 }

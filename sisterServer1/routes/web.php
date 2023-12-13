@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/games', [GameController::class,'indexserver'])->name('gamesserver.index');
+Route::get('/games/{id}', [GameController::class,'show'])->name('gamesserver.show');
+Route::get('/games/{id}/edit', [GameController::class,'edit'])->name('gamesserver.edit');
+
+Route::post('/games', [GameController::class,'store'])->name('gamesserver.store');
+Route::put('/games/{id}', [GameController::class,'update'])->name('gamesserver.update');
+Route::delete('/games/{id}', [GameController::class,'destroy'])->name('gamesserver.destroy');

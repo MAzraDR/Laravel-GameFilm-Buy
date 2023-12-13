@@ -28,6 +28,16 @@ class FilmController extends Controller
             );
         }
     }
+    public function indexserver(Request $request) {
+        $films = Film::all();
+        if ($request->is('api/*')) {
+            // Jika permintaan dari API, kirimkan sebagai JSON
+            return response()->json($films);
+        } else {
+            // Jika permintaan biasa, tampilkan sebagai tampilan HTML
+            return view('index', compact('films'));
+        }
+    }
 
     public function show($id)
     {
@@ -45,6 +55,13 @@ class FilmController extends Controller
             ], 404);
         }
     }
+
+    public function edit($id)
+    {
+        $film = Film::find($id);
+        return view('edit', compact('film'));
+    }
+
 
     public function store(Request $request) {
         $payload = $request->only("title", "genre", "year", "rating", "image_url");
@@ -65,11 +82,7 @@ class FilmController extends Controller
 
         $film = Film::create($payload);
 
-        return response()->json([
-            "status_code" => 200,
-            "message" => "success",
-            "film" => $film,            
-        ]);
+    return redirect(route('filmsserver.index'));
     }
 
     public function update(Request $request, $id) {
@@ -96,7 +109,7 @@ class FilmController extends Controller
             'image_url' => $request->input('image_url', $film->image_url),           
         ]);
 
-        return response()->json(['film' => $film], 200);
+        return redirect(route('filmsserver.index'));
     }
 
     public function destroy($id) {
@@ -108,7 +121,7 @@ class FilmController extends Controller
 
         $film->delete();
 
-        return response()->json(['message' => 'Film deleted'], 200);
+        return redirect(route('filmsserver.index'));
     }
 
 }
